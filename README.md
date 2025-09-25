@@ -36,6 +36,20 @@ npm i
 npm run dev
 ```
 
+### Chat server (Hugging Face powered)
+
+Create a `.env` file at the project root with your Hugging Face key:
+
+```sh
+HF_API_KEY=your_hf_api_key
+```
+
+Run the chat server:
+
+```sh
+npm run server
+```
+
 **Edit a file directly in GitHub**
 
 - Navigate to the desired file(s).

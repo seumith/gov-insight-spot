@@ -7,15 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Heart, MessageCircle, Search, Filter, TrendingUp, Users } from "lucide-react";
-import { schemes, categories, getSchemesByCategory, getPopularSchemes } from "@/data/schemes";
+import { categories, getPopularSchemes } from "@/data/schemes";
+import BookmarkButton from "@/components/BookmarkButton";
+import { useSchemesStore } from "@/contexts/SchemesContext";
 
 const BrowseSchemes = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"popularity" | "recent">("popularity");
+  const { schemes } = useSchemesStore();
 
-  // Filter schemes based on category and search term
-  const filteredSchemes = getSchemesByCategory(selectedCategory)
+  const filteredSchemes = (selectedCategory === "All" ? schemes : schemes.filter(s => s.category === selectedCategory))
     .filter(scheme => 
       scheme.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       scheme.description.toLowerCase().includes(searchTerm.toLowerCase())
@@ -24,10 +26,10 @@ const BrowseSchemes = () => {
       if (sortBy === "popularity") {
         return b.likes - a.likes;
       }
-      return 0; // For now, keeping same order for "recent"
+      return 0;
     });
 
-  const popularSchemes = getPopularSchemes().slice(0, 3);
+  const popularSchemes = (getPopularSchemes() || schemes).slice(0, 3);
 
   return (
     <div className="min-h-screen">
@@ -178,6 +180,9 @@ const BrowseSchemes = () => {
                             <MessageCircle className="h-4 w-4 text-blue-500" />
                             <span>{scheme.comments}</span>
                           </div>
+                          <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                            <BookmarkButton schemeId={scheme.id} size="sm" />
+                          </span>
                         </div>
                       </div>
                       <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2">
